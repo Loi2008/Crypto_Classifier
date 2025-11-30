@@ -7,3 +7,10 @@ xgboost
 joblib
 matplotlib
 seaborn
+lightgbm 
+catboost
+streamlit 
+plotly 
+fastapi 
+uvicorn 
+pydantic

@@ -1,0 +1,17 @@
+
+# Ignore Virtual Environment
+myVENV/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Ignore Dataset (Too large for GitHub)
+data/raw/*.csv
+data/processed/*.csv
+data/feature_engineered/*.csv
+data/labeled/*.csv
+
+# Ignore System Files
+.DS_Store
+.ipynb_checkpoints/

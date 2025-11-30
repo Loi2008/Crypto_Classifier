@@ -2,28 +2,51 @@ import pandas as pd
 import ta
 import os
 
-def feature_generator(input_path="Crypto_classifier/data/raw/raw_data.csv"):
+def feature_generator():
     """
-    Loads raw data, cleans it, adds technical indicators, and generates labels.
-    """
-    print("Starting feature engineering...")
+    Loads processed data, adds technical indicators, and saves 
+    to 'data/feature_engineered/'.
     
-    # 1. Load Data
+    DOES NOT generate labels (that is now handled by labeler.py).
+    """
+    # --- 1. ROBUST PATH SETUP ---
+    # Get the folder where THIS script is (src/)
+    current_script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_script_dir)
+    
+    # INPUT: We try to load the CLEANED data first
+    input_path = os.path.join(project_root, 'data', 'processed', 'processed_data.csv')
+    
+    # OUTPUT: Feature Engineered folder
+    output_dir = os.path.join(project_root, 'data', 'feature_engineered')
+    output_path = os.path.join(output_dir, 'feature_engineered_data.csv')
+
+    print(f"🚀 Starting feature engineering...")
+    print(f"   Reading from: {input_path}")
+    
     if not os.path.exists(input_path):
-        print(f"File {input_path} not found. Run data_fetcher.py first.")
+        print(f"❌ Error: File not found at {input_path}")
+        print("   Please run processed_data.py first.")
         return None
         
     df = pd.read_csv(input_path)
     
-    # 2. Cleaning & Typing
-    df["open_time"] = pd.to_datetime(df["open_time"], unit='ms')
-    numeric_cols = ["open", "high", "low", "close", "volume"]
-    df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, axis=1)
+    # --- 2. PREP DATA (Fix Types) ---
+    # Even though we cleaned it, CSVs lose datetime format, so we fix it again.
+    if 'open_time' in df.columns:
+        df["open_time"] = pd.to_datetime(df["open_time"])
     
-    # Drop columns not needed for training
+    # Ensure numeric
+    numeric_cols = ["open", "high", "low", "close", "volume"]
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    # Keep only OHLCV for calculation
     df = df[["open_time", "open", "high", "low", "close", "volume"]]
 
-    # 3. Feature Engineering (Technical Indicators)
+    # --- 3. CALCULATE INDICATORS ---
+    print("   Calculating technical indicators...")
     
     # RSI
     df["rsi"] = ta.momentum.RSIIndicator(df["close"], window=14).rsi()
@@ -32,47 +55,40 @@ def feature_generator(input_path="Crypto_classifier/data/raw/raw_data.csv"):
     macd = ta.trend.MACD(df["close"])
     df["macd"] = macd.macd()
     df["macd_signal"] = macd.macd_signal()
+    df["macd_hist"] = macd.macd_diff()
     
-    # Simple Moving Averages
+    # Moving Averages
     df["sma_20"] = ta.trend.SMAIndicator(df["close"], window=20).sma_indicator()
     df["sma_50"] = ta.trend.SMAIndicator(df["close"], window=50).sma_indicator()
+    df["sma_200"] = ta.trend.SMAIndicator(df["close"], window=200).sma_indicator()
     
     # Bollinger Bands
     bb = ta.volatility.BollingerBands(df["close"], window=20, window_dev=2)
     df["bb_high"] = bb.bollinger_hband()
     df["bb_low"] = bb.bollinger_lband()
     
-    # Returns (Features)
+    # Volatility (Rolling Std Dev)
+    df["volatility"] = df["close"].pct_change().rolling(window=20).std()
+    
+    # Returns (Features for the model, NOT targets)
     df["pct_change_1d"] = df["close"].pct_change()
     df["pct_change_7d"] = df["close"].pct_change(periods=7)
-    df["volatility"] = df["close"].pct_change().rolling(window=20).std()
 
-    # 4. Label Generation (Target)
-    # Target: Return of the *next* day. 
-    # Logic: > +2% (Buy/2), < -2% (Sell/0), Else (Hold/1)
+    # --- 4. CLEANUP & SAVE ---
+    # We drop NaNs created by the indicators (like the first 200 rows for SMA200)
+    # We do NOT generate labels here anymore.
     
-    df["future_return"] = df["close"].pct_change().shift(-1)
-    
-    def get_label(ret):
-        if ret > 0.02:
-            return 2  # BUY
-        elif ret < -0.02:
-            return 0  # SELL
-        else:
-            return 1  # HOLD
-
-    df["label"] = df["future_return"].apply(get_label)
-
-    # 5. Cleanup
-    # Drop rows with NaN (due to rolling windows or shifted targets)
+    initial_len = len(df)
     df.dropna(inplace=True)
+    dropped_rows = initial_len - len(df)
     
-    # Save Processed Data
-    #os.makedirs("data/processed", exist_ok=True)
-    output_path = "Crypto_Classifier/data/feature_engineered/feature_engineered_data.csv"
+    # Create output directory
+    #os.makedirs(output_dir, exist_ok=True)
+    
     df.to_csv(output_path, index=False)
-    print(f"Feature engineered data saved to {output_path}")
-    print(f"Label Distribution:\n{df['label'].value_counts()}")
+    print(f"✅ Features generated.")
+    print(f"   Dropped {dropped_rows} rows (warmup for indicators).")
+    print(f"   Saved to: {output_path}")
     
     return df
 
