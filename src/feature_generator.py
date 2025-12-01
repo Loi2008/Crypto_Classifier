@@ -21,11 +21,11 @@ def feature_generator():
     output_dir = os.path.join(project_root, 'data', 'feature_engineered')
     output_path = os.path.join(output_dir, 'feature_engineered_data.csv')
 
-    print(f"🚀 Starting feature engineering...")
-    print(f"   Reading from: {input_path}")
+    print(f" Starting feature engineering...")
+    print(f"  Reading from: {input_path}")
     
     if not os.path.exists(input_path):
-        print(f"❌ Error: File not found at {input_path}")
+        print(f" Error: File not found at {input_path}")
         print("   Please run processed_data.py first.")
         return None
         
@@ -76,17 +76,16 @@ def feature_generator():
 
     # --- 4. CLEANUP & SAVE ---
     # We drop NaNs created by the indicators (like the first 200 rows for SMA200)
-    # We do NOT generate labels here anymore.
     
     initial_len = len(df)
     df.dropna(inplace=True)
     dropped_rows = initial_len - len(df)
     
     # Create output directory
-    #os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
     df.to_csv(output_path, index=False)
-    print(f"✅ Features generated.")
+    print(f" Features generated.")
     print(f"   Dropped {dropped_rows} rows (warmup for indicators).")
     print(f"   Saved to: {output_path}")
     
