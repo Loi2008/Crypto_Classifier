@@ -92,8 +92,8 @@ Bash
 ```streamlit run src/app.py
 ```
 #Notebooks Guide
-01_fetch_data.ipynb: ETL process visualization.
-02_feature_engineering.ipynb: Visualization of RSI, MACD, and Price.
-03_model_training.ipynb: Training logs and validation scores.
-04_evaluation.ipynb: Confusion matrix and performance report of the winner.
-05_binance_prediction.ipynb: Testing the model on specific scenarios.
+- 01_fetch_data.ipynb: ETL process visualization.
+- 02_feature_engineering.ipynb: Visualization of RSI, MACD, and Price.
+- 03_model_training.ipynb: Training logs and validation scores.
+- 04_evaluation.ipynb: Confusion matrix and performance report of the winner.
+- 05_binance_prediction.ipynb: Testing the model on specific scenarios.
