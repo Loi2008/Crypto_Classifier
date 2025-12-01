@@ -50,35 +50,47 @@ crypto-classifier/
 │── models/                   # Saved .pkl models
 │── README.md
 │── requirements.txt
+```
+
 3. How to Run the Pipeline
 You can run the entire workflow from the terminal using these commands in order:
+
 Phase 1: Data Engineering
 code
 Bash
 # 1. Fetch raw data
-python src/data_fetcher.py
-
+```python
+src/data_fetcher.py
+```
 # 2. Clean data types
-python src/data_processor.py
-
+```python
+src/data_processor.py
+```
 # 3. Generate Technical Indicators
-python src/feature_generator.py
-
+```python
+src/feature_generator.py
+```
 # 4. Generate Targets (Dynamic Imbalance Fix)
-python src/labeler.py
+```python src/labeler.py
+```
 Phase 2: Machine Learning
 code
 Bash
 # 5. Train Model Zoo (XGBoost, CatBoost, RF, etc.)
-python src/train.py
-
+```python
+src/train.py
+```
 # 6. Evaluate & Select Best Model
-python src/evaluate.py
+```python
+src/evaluate.py
+```
+
 Phase 3: User Interface
 To launch the interactive dashboard:
 code
 Bash
-streamlit run src/app.py
+```streamlit run src/app.py
+```
 4. Notebooks Guide
 01_fetch_data.ipynb: ETL process visualization.
 02_feature_engineering.ipynb: Visualization of RSI, MACD, and Price.
