@@ -76,7 +76,7 @@ src/feature_generator.py
 Phase 2: Machine Learning
 code
 Bash
-# 5. Train Model Zoo (XGBoost, CatBoost, RF, etc.)
+# 5. Train Models 
 ```python
 src/train.py
 ```
@@ -91,7 +91,7 @@ code
 Bash
 ```streamlit run src/app.py
 ```
-4. Notebooks Guide
+#Notebooks Guide
 01_fetch_data.ipynb: ETL process visualization.
 02_feature_engineering.ipynb: Visualization of RSI, MACD, and Price.
 03_model_training.ipynb: Training logs and validation scores.
