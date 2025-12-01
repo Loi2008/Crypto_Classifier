@@ -1,5 +1,5 @@
 
-# 📘 Crypto Buy/Sell Classification Capstone
+# Crypto Buy/Sell Classification Capstone
 ### End-to-End Machine Learning Pipeline Using Real Binance Data
 
 **Status:** Completed
