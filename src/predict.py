@@ -17,7 +17,7 @@ def load_model(model_name):
     model_path = os.path.join(project_root, 'models', model_name)
 
     if not os.path.exists(model_path):
-        raise FileNotFoundError(f"❌ Model not found: {model_path}")
+        raise FileNotFoundError(f"Model not found: {model_path}")
         
     return joblib.load(model_path)
 
@@ -27,7 +27,7 @@ def predict_from_dataframe(input_df, model_name="best_crypto_model"):
     If no model_name is given, defaults to 'best_crypto_model'.
     """
     # 1. Load Model
-    print(f"   🤖 Loading model: {model_name}...")
+    print(f"    Loading model: {model_name}...")
     model = load_model(model_name)
     
     # 2. Prepare Data

@@ -65,7 +65,7 @@ def train_models():
     }
 
     # --- 4. TRAIN & SAVE LOOP ---
-    print(f"\n   🏃 Training {len(models)} models...")
+    print(f"\n    Training {len(models)} models...")
     
     for name, model in models.items():
         try:
