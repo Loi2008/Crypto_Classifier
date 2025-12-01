@@ -88,8 +88,8 @@ src/evaluate.py
 Phase 3: User Interface
 To launch the interactive dashboard:
 code
-Bash
-```streamlit run src/app.py
+```Bash
+streamlit run src/app.py
 ```
 #Notebooks Guide
 - 01_fetch_data.ipynb: ETL process visualization.
